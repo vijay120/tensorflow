@@ -349,8 +349,11 @@ class AudioProcessor(object):
     desired_samples = model_settings['desired_samples']
     self.wav_filename_placeholder_ = tf.placeholder(tf.string, [])
     wav_loader = io_ops.read_file(self.wav_filename_placeholder_)
-    wav_decoder = contrib_audio.decode_wav(
-        wav_loader, desired_channels=1, desired_samples=desired_samples)
+    try:
+      wav_decoder = contrib_audio.decode_wav(
+          wav_loader, desired_channels=1, desired_samples=desired_samples)
+    except Exception:
+      import pdb; pdb.set_trace()
     # Allow the audio sample's volume to be adjusted.
     self.foreground_volume_placeholder_ = tf.placeholder(tf.float32, [])
     scaled_foreground = tf.multiply(wav_decoder.audio,
